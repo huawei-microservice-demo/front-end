@@ -33,65 +33,18 @@ Front-end application written in [Node.js](https://nodejs.org/en/) that puts tog
   </tbody>
 </table>
 
-## Node
+example: docker-image-name:version-tag --> sockshop-frontend-service:0.7.0-SNAPSHOT
 
-`npm install`
+## Step1: Build the docker image
+docker build --no-cache=true -t [docker-image-name:version-tag] .
 
-## Docker
+## Step2: Tag the image with service stage
+docker tag [docker-image-name:version-tag]  registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
 
-`make test-image`
+## Step3: Docker login
+docker login -u [username] -p [private-key] [registry-name]
 
-## Docker Compose
+## Step4: Docker push
+docker push registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
 
-`make up`
-
-# Test
-
-**Make sure that the microservices are up & running**
-
-## Unit & Functional tests:
-
-```
-make test
-```
-
-## End-to-End tests:
-  
-To make sure that the test suite is running against the latest (local) version with your changes, you need to manually build
-the image, run the container and attach it to the proper Docker networks.
-There is a make task that will do all this for you:
-
-```
-make dev
-```
-
-That will also tail the logs of the container to make debugging easy.
-Then you can run the tests with:
-
-```
-make e2e
-```
-
-# Run
-
-## Node
-
-`npm start`
-
-## Docker
-
-`make server`
-
-# Use
-
-## Node
-
-`curl http://localhost:8081`
-
-## Docker Compose
-
-`curl http://localhost:8080`
-
-# Push
-
-`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
+## Step5: Login to the service and get the ip address / domain to open microservice in browser
