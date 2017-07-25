@@ -29,19 +29,20 @@ example: docker-image-name:version-tag --> sockshop-frontend-service:0.7.0-SNAPS
 
 ## Step1: 
 git clone git@github.com:huawei-microservice-demo/front-end.git
+## Step2:
 cd front-end
 
-## Step2: Build the docker image
+## Step3: Build the docker image
 docker build --no-cache=true -t [docker-image-name:version-tag] .
 
-## Step3: Tag the image with service stage
+## Step4: Tag the image with service stage
 docker tag [docker-image-name:version-tag]  registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
 
-## Step4: Docker login
+## Step5: Docker login
 docker login -u [username] -p [private-key] [registry-name]
 
-## Step5: Docker push
+## Step6: Docker push
 docker push registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
 
-## Step6: 
+## Step7: 
 Login to the service and get the ip address / domain to open microservice in browser
