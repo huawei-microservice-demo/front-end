@@ -20,15 +20,7 @@ Front-end application written in [Node.js](https://nodejs.org/en/) that puts tog
   <tbody>
     <tr>
       <td><a href="https://docker.com">Docker</a></td>
-      <td>>= 1.12</td>
-    </tr>
-    <tr>
-      <td><a href="https://docs.docker.com/compose/">Docker Compose</a></td>
-      <td>>= 1.8.0</td>
-    </tr>
-    <tr>
-      <td><a href="gnu.org/s/make">Make</a>&nbsp;(optional)</td>
-      <td>>= 4.1</td>
+      <td>= 1.11.2</td>
     </tr>
   </tbody>
 </table>
