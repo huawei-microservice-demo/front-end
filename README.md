@@ -47,4 +47,7 @@ docker login -u [username] -p [private-key] [registry-name]
 ## Step4: Docker push
 docker push registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
 
-## Step5: Login to the service and get the ip address / domain to open microservice in browser
+## Step5: 
+Login to the service and get the ip address / domain to open microservice in browser
+
+
