@@ -36,13 +36,13 @@ cd front-end
 docker build --no-cache=true -t [docker-image-name:version-tag] .
 
 ## Step4: Tag the image with service stage
-docker tag [docker-image-name:version-tag]  registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
+docker tag [docker-image-name:version-tag]  registry.cn-north-1.hwclouds.com/[service-stage-username]/[docker-image-name:version-tag]
 
 ## Step5: Docker login
 docker login -u [username] -p [private-key] [registry-name]
 
 ## Step6: Docker push
-docker push registry.cn-north-1.hwclouds.com/hwcse/[docker-image-name:version-tag]
+docker push registry.cn-north-1.hwclouds.com/[service-stage-username]/[docker-image-name:version-tag]
 
 ## Step7: 
 Login to the service and get the ip address / domain to open microservice in browser
