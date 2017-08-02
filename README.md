@@ -20,78 +20,29 @@ Front-end application written in [Node.js](https://nodejs.org/en/) that puts tog
   <tbody>
     <tr>
       <td><a href="https://docker.com">Docker</a></td>
-      <td>>= 1.12</td>
-    </tr>
-    <tr>
-      <td><a href="https://docs.docker.com/compose/">Docker Compose</a></td>
-      <td>>= 1.8.0</td>
-    </tr>
-    <tr>
-      <td><a href="gnu.org/s/make">Make</a>&nbsp;(optional)</td>
-      <td>>= 4.1</td>
+      <td>= 1.11.2</td>
     </tr>
   </tbody>
 </table>
 
-## Node
+example: docker-image-name:version-tag --> sockshop-frontend-service:0.7.0-SNAPSHOT
 
-`npm install`
+## Step1: 
+git clone git@github.com:huawei-microservice-demo/front-end.git
+## Step2:
+cd front-end
 
-## Docker
+## Step3: Build the docker image
+docker build --no-cache=true -t [docker-image-name:version-tag] .
 
-`make test-image`
+## Step4: Tag the image with service stage
+docker tag [docker-image-name:version-tag]  registry.cn-north-1.hwclouds.com/[service-stage-username]/[docker-image-name:version-tag]
 
-## Docker Compose
+## Step5: Docker login
+docker login -u [username] -p [private-key] [registry-name]
 
-`make up`
+## Step6: Docker push
+docker push registry.cn-north-1.hwclouds.com/[service-stage-username]/[docker-image-name:version-tag]
 
-# Test
-
-**Make sure that the microservices are up & running**
-
-## Unit & Functional tests:
-
-```
-make test
-```
-
-## End-to-End tests:
-  
-To make sure that the test suite is running against the latest (local) version with your changes, you need to manually build
-the image, run the container and attach it to the proper Docker networks.
-There is a make task that will do all this for you:
-
-```
-make dev
-```
-
-That will also tail the logs of the container to make debugging easy.
-Then you can run the tests with:
-
-```
-make e2e
-```
-
-# Run
-
-## Node
-
-`npm start`
-
-## Docker
-
-`make server`
-
-# Use
-
-## Node
-
-`curl http://localhost:8081`
-
-## Docker Compose
-
-`curl http://localhost:8080`
-
-# Push
-
-`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
+## Step7: 
+Login to the service and get the ip address / domain to open microservice in browser
