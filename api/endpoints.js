@@ -24,7 +24,10 @@
     var headerObj
     //var userUrl = process.env.USER_SERVICE_HOST + ":" + process.env.USER_SERVICE_PORT; 
     //var catalogueUrl = process.env.CATALOGUE_SERVICE_HOST + ":" + process.env.CATALOGUE_SERVICE_PORT; 
-    var basePath = "/var/run/secrets/kubernetes.io/serviceaccount"; var url = ""; fs.readFile(basePath + '/namespace', 'utf8', function (err, data) {
+    var basePath = "/var/run/secrets/kubernetes.io/serviceaccount"; 
+	var url = ""; 
+	
+	fs.readFile(basePath + '/namespace', 'utf8', function (err, data) {
         if (err) { return console.log(err); } var namespace = data;
 
         fs.readFile(basePath + '/token', 'utf8', function (err, data) {
@@ -228,7 +231,17 @@
             try {
                 console.log("Inside getEndpoints function with the response", str)
                 var instance = JSON.parse(str).instances[0];
-                var url = JSON.parse(str).instances[0].endpoints[0].toString().replace("rest", "http");
+				var endPoints = JSON.parse(str).instances[0].endpoints;
+				for (var i = 0; i < endPoints.length; i++){
+                                     console.log("in for loop for endpoint check "+endPoints[i])	
+					if(endPoints[i].toString().indexOf("rest") != -1){
+						var url = endPoints[i].toString().replace("rest", "http");
+						console.log("==================> in rest check : ",url);
+					}
+                                                                               
+					
+				}
+                //var url = JSON.parse(str).instances[0].endpoints[0].toString().replace("rest", "http");
                 console.log("getEndpoiints url --> ", url, "response.req._headers.servicename + Url", response.req._headers.servicename + "Url");
                 module.exports[response.req._headers.servicename + "Url"] = util.format(url + "/" + response.req._headers.servicename);
                 if (response.req._headers.servicename == "orders" || response.req._headers.servicename == "orders") {
