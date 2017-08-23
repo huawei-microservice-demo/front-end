@@ -14,7 +14,7 @@ var request      = require("request")
   , user         = require("./api/user")
   , metrics      = require("./api/metrics")
   , app          = express()
-
+  , service      = require("./api/service")
 
 app.use(helpers.rewriteSlash);
 app.use(metrics);

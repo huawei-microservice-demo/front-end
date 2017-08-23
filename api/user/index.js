@@ -1,30 +1,32 @@
 (function() {
     'use strict';
 
-    var async = require("async"), express = require("express"), request = require("request"), endpoints = require("../endpoints"), helpers = require("../../helpers"), app = express(), cookie_name = "logged_in"
+    var async = require("async"), express = require("express"), request = require("request"), helpers = require("../../helpers"), app = express(), cookie_name = "logged_in", service = require("../service")
 
 
     app.get("/customers/:id", function(req, res, next) {
-        helpers.simpleHttpRequest(endpoints.customersUrl + "/" + req.session.customerId, res, next);
+        helpers.simpleHttpRequest("http://user/customers/" + req.session.customerId, res, next);
     });
     app.get("/cards/:id", function(req, res, next) {
-        helpers.simpleHttpRequest(endpoints.cardsUrl + "/" + req.params.id, res, next);
+        helpers.simpleHttpRequest("http://user/cards/" + req.params.id, res, next);
     });
 
     app.get("/customers", function(req, res, next) {
-        helpers.simpleHttpRequest(endpoints.customersUrl, res, next);
+        helpers.simpleHttpRequest("http://user/customers", res, next);
     });
     app.get("/addresses", function(req, res, next) {
-        helpers.simpleHttpRequest(endpoints.addressUrl, res, next);
+        helpers.simpleHttpRequest("http://user/addresses", res, next);
     });
     app.get("/cards", function(req, res, next) {
-        helpers.simpleHttpRequest(endpoints.cardsUrl, res, next);
+        helpers.simpleHttpRequest("http://user/cards", res, next);
     });
 
     // Create Customer - TO BE USED FOR TESTING ONLY (for now)
     app.post("/customers", function(req, res, next) {
         var options = {
-            uri: endpoints.customersUrl,
+            headers: service.headers,
+            uri: "http://user/customers",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
             body: req.body
@@ -46,7 +48,9 @@
         req.body.userID = helpers.getCustomerId(req, app.get("env"));
 
         var options = {
-            uri: endpoints.addressUrl,
+            headers: service.headers,
+            uri: "http://user/addresses",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
             body: req.body
@@ -65,7 +69,9 @@
     app.get("/card", function(req, res, next) {
         var custId = helpers.getCustomerId(req, app.get("env"));
         var options = {
-            uri: endpoints.customersUrl + '/' + custId + '/cards',
+            headers: service.headers,
+            proxy: service.proxy,
+            uri: 'http://user/customers/' + custId + '/cards',
             method: 'GET',
         };
         request(options, function(error, response, body) {
@@ -88,7 +94,9 @@
     app.get("/address", function(req, res, next) {
         var custId = helpers.getCustomerId(req, app.get("env"));
         var options = {
-            uri: endpoints.customersUrl + '/' + custId + '/addresses',
+            headers: service.headers,
+            proxy: service.proxy,
+            uri: 'http://user/customers/' + custId + '/addresses',
             method: 'GET',
         };
         request(options, function(error, response, body) {
@@ -110,7 +118,9 @@
         req.body.userID = helpers.getCustomerId(req, app.get("env"));
 
         var options = {
-            uri: endpoints.cardsUrl,
+            headers: service.headers,
+            uri: "http://user/cards",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
             body: req.body
@@ -130,7 +140,9 @@
     app.delete("/customers/:id", function(req, res, next) {
         console.log("Deleting Customer " + req.params.id);
         var options = {
-            uri: endpoints.customersUrl + "/" + req.params.id,
+            headers: service.headers,
+            proxy: service.proxy,
+            uri: "http://user/customers/" + req.params.id,
             method: 'DELETE'
         };
         request(options, function(error, response, body) {
@@ -147,7 +159,9 @@
     app.delete("/addresses/:id", function(req, res, next) {
         console.log("Deleting Address " + req.params.id);
         var options = {
-            uri: endpoints.addressUrl + "/" + req.params.id,
+            headers: service.headers,
+            uri: "http://user/addresses/" + req.params.id,
+            proxy: service.proxy,
             method: 'DELETE'
         };
         request(options, function(error, response, body) {
@@ -164,7 +178,9 @@
     app.delete("/cards/:id", function(req, res, next) {
         console.log("Deleting Card " + req.params.id);
         var options = {
-            uri: endpoints.cardsUrl + "/" + req.params.id,
+            headers: service.headers,
+            uri: "http://user/cards/" + req.params.id,
+            proxy: service.proxy,
             method: 'DELETE'
         };
         request(options, function(error, response, body) {
@@ -179,7 +195,9 @@
 
     app.post("/register", function(req, res, next) {
         var options = {
-            uri: endpoints.registerUrl,
+            headers: service.headers,
+            uri: "http://user/register",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
             body: req.body
@@ -215,7 +233,9 @@
                     console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
                     var options = {
-                        uri: endpoints.cartsUrl + "/" + custId + "/merge" + "?sessionId=" + sessionId,
+                        headers: service.headers,
+                        uri: "http://user/cards/" + custId + "/merge" + "?sessionId=" + sessionId,
+                        proxy: service.proxy,
                         method: 'GET'
                     };
                     request(options, function(error, response, body) {
@@ -254,9 +274,12 @@
                 function(callback) {
                     var options = {
                         headers: {
+                            'X-App': 'sockshop',
+                            'X-Version': '0.0.1',
                             'Authorization': req.get('Authorization')
                         },
-                        uri: endpoints.loginUrl
+                        uri: "http://user/login",
+                        proxy: service.proxy,
                     };
                     request(options, function(error, response, body) {
                         if (error) {
@@ -280,7 +303,9 @@
                     console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
                     var options = {
-                        uri: endpoints.cartsUrl + "/" + custId + "/merge" + "?sessionId=" + sessionId,
+                        headers: service.headers,
+                        uri: "http://user/carts/" + custId + "/merge" + "?sessionId=" + sessionId,
+                        proxy: service.proxy,
                         method: 'GET'
                     };
                     request(options, function(error, response, body) {

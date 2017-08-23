@@ -100,20 +100,24 @@
             var services = JSON.parse(str).services;
             var serviceDtls = [];
             for (var i = 0; i < services.length; i++) {
-                console.log("Inside for loop services[i].serviceName.toLowerCase() !== 'servicecenter'", services[i].serviceName.toLowerCase() !== 'servicecenter', services[i].serviceName.toLowerCase());
-                if (services[i].serviceName.toLowerCase() !== 'servicecenter') {
-                    var curHeaders = headerObj;
-                    curHeaders['X-consumerId'] = serviceId
-                    curHeaders['serviceName'] = services[i].serviceName
-                    var api = {
-                        host: serviceCenterIp,
-                        path: '/registry/v3/microservices/' + services[i].serviceId + '/instances',
-                        port: serviceCenterPort,
-                        rejectUnauthorized: false,
-                        headers: curHeaders
-                    };
-                    https.request(api, getEndpoints).end();
-                }
+                if(services[i].serviceName.toLowerCase() == "orders"){
+                    console.log("got orders service name")
+                    console.log("Inside for loop services[i].serviceName.toLowerCase() !== 'servicecenter'", services[i].serviceName.toLowerCase() !== 'servicecenter', services[i].serviceName.toLowerCase());
+                    if (services[i].serviceName.toLowerCase() !== 'servicecenter') {
+                        var curHeaders = headerObj;
+                        curHeaders['X-consumerId'] = serviceId
+                        curHeaders['serviceName'] = services[i].serviceName
+                        var api = {
+                            host: serviceCenterIp,
+                            path: '/registry/v3/microservices/' + services[i].serviceId + '/instances',
+                            port: serviceCenterPort,
+                            rejectUnauthorized: false,
+                            headers: curHeaders
+                        };
+                        https.request(api, getEndpoints).end();
+                    }
+                } 
+
             }
         });
 
@@ -247,23 +251,6 @@
                 if (response.req._headers.servicename == "orders" || response.req._headers.servicename == "orders") {
                     module.exports["ordersUrl"] = util.format(url);
                 }
-                if (response.req._headers.servicename == "cart" || response.req._headers.servicename == "carts") {
-                    console.log("cart found in service center");
-                    module.exports["cartsUrl"] = util.format(url + "/" + response.req._headers.servicename);
-                }
-                if (response.req._headers.servicename == "catalogue") {
-                    console.log("catalogue found in service center");
-                    module.exports["catalogueUrl"] = util.format(url);
-                    module.exports["tagsUrl"] = util.format(url + "/");
-                }
-                if (response.req._headers.servicename == "user") {
-                    console.log("user found in service Center");
-                    module.exports["customersUrl"] = util.format(url + "/customers");
-                    module.exports["addressUrl"] = util.format(url + "/addresses");
-                    module.exports["cardsUrl"] = util.format(url + "/cards");
-                    module.exports["loginUrl"] = util.format(url + "/login");
-                    module.exports["registerUrl"] = util.format(url + "/register");
-                }
                 console.log("getEndpoints try block--> ", module.exports);
             } catch (error) {
                 console.log("getEndpoints catch block--> ", error);
@@ -274,13 +261,4 @@
     console.log("About to call the dumb API version2.0.0 ");
     //http.request(options, getServiceCenterInstances).end();
 
-    module.exports = {
-        //        catalogueUrl: util.format("http://%s", catalogueUrl),
-        //        tagsUrl: util.format("http://%s/tags", catalogueUrl),
-        //        customersUrl: util.format("http://%s/customers", userUrl),
-        //        addressUrl: util.format("http://%s/addresses", userUrl),
-        //        cardsUrl: util.format("http://%s/cards", userUrl),
-        //        loginUrl: util.format("http://%s/login", userUrl),
-        //        registerUrl: util.format("http://%s/register", userUrl),
-    };
 }());

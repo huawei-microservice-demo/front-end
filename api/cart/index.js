@@ -5,15 +5,21 @@
     , express   = require("express")
     , request   = require("request")
     , helpers   = require("../../helpers")
-    , endpoints = require("../endpoints")
     , app       = express()
+    , service   = require('../service')
 
   // List items in cart for current logged in user.
   app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = helpers.getCustomerId(req, app.get("env"));
     console.log("Customer ID: " + custId);
-    request(endpoints.cartsUrl + "/" + custId + "/items", function (error, response, body) {
+    var options = {
+      headers: service.headers,
+      uri: "http://carts/carts/" + custId + "/items",
+      proxy: service.proxy,
+      method: 'GET'
+    }
+    request(options, function (error, response, body) {
       if (error) {
         return next(error);
       }
@@ -26,7 +32,9 @@
     var custId = helpers.getCustomerId(req, app.get("env"));
     console.log('Attempting to delete cart for user: ' + custId);
     var options = {
-      uri: endpoints.cartsUrl + "/" + custId,
+      headers: service.headers,
+      uri: "http://carts/carts/" + custId,
+      proxy: service.proxy,
       method: 'DELETE'
     };
     request(options, function (error, response, body) {
@@ -49,7 +57,9 @@
     var custId = helpers.getCustomerId(req, app.get("env"));
 
     var options = {
-      uri: endpoints.cartsUrl + "/" + custId + "/items/" + req.params.id.toString(),
+      headers: service.headers,
+      uri: "http://carts/carts/" + custId + "/items/" + req.params.id.toString(),
+      proxy: service.proxy,
       method: 'DELETE'
     };
     request(options, function (error, response, body) {
@@ -74,14 +84,22 @@
 
     async.waterfall([
         function (callback) {
-          request(endpoints.catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+          var options = {
+            headers: service.headers,
+            uri: "http://catalogue/catalogue/" + req.body.id.toString(),
+            proxy: service.proxy,
+            method: 'GET'
+        };
+          request(options, function (error, response, body) {
             console.log(body);
             callback(error, JSON.parse(body));
           });
         },
         function (item, callback) {
           var options = {
-            uri: endpoints.cartsUrl + "/" + custId + "/items",
+            headers: service.headers,
+            uri: "http://carts/carts/" + custId + "/items",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
             body: {itemId: item.id, unitPrice: item.price}
@@ -122,7 +140,13 @@
 	console.log("CustId befor the catalogue call ", custId);
     async.waterfall([
         function (callback) {
-          request(endpoints.catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+           var options = {
+            headers: service.headers,
+            uri: "http://catalogue/catalogue/" + req.body.id.toString(),
+            proxy: service.proxy,
+            method: 'GET'
+          };
+          request(options, function (error, response, body) {
             console.log(body);
             callback(error, JSON.parse(body));
           });
@@ -132,7 +156,9 @@
 		custId = helpers.getCustomerId(req, app.get("env"));
 	console.log("CustId recalling to the helpre method ", custId);
           var options = {
-            uri: endpoints.cartsUrl + "/" + custId + "/items",
+            headers: service.headers,
+            uri: "http://carts/carts/" + custId + "/items",
+            proxy: service.proxy,
             method: 'PATCH',
             json: true,
             body: {itemId: item.id, quantity: parseInt(req.body.quantity), unitPrice: item.price}

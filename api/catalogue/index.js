@@ -3,10 +3,11 @@
 
   var express   = require("express")
     , request   = require("request")
-    , endpoints = require("../endpoints")
     , helpers   = require("../../helpers")
     , app       = express()
+    , service   = require("../service")
 
+  console.log("**************************** got proxy ************************************"+service.proxy)
   app.use('/catalogue/images', express.static(__dirname + '/images'));
 
   app.get("/catalogue/images*", function (req, res, next) {
@@ -25,15 +26,12 @@
 
 
   app.get("/catalogue*", function (req, res, next) {
-    console.log("/catalogue* is called --> ", endpoints.catalogueUrl );
-	var temp  = endpoints.catalogueUrl;
-	console.log("This is the url being called ", temp);
-    helpers.simpleHttpRequest(endpoints.catalogueUrl +  req.url.toString(), res, next);
+    console.log("/catalogue* is called --> ");
+    helpers.simpleHttpRequest("http://catalogue" +  req.url.toString(), res, next);
   });
 
   app.get("/tags", function(req, res, next) {
-    console.log("/tags is called --> ", endpoints.tagsUrl );
-    helpers.simpleHttpRequest(endpoints.tagsUrl + 'tags', res, next);
+    helpers.simpleHttpRequest("http://catalogue/"+ 'tags', res, next);
   });
 
   module.exports = app;

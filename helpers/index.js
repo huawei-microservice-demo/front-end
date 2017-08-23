@@ -2,6 +2,7 @@
   'use strict';
 
   var request = require("request");
+  var service = require("../api/service");
   var helpers = {};
 
   /* Public: errorHandler is a middleware that handles your errors
@@ -77,8 +78,11 @@
    */
   helpers.simpleHttpRequest = function(url, res, next) {
 	console.log("simpleHttpRequest url ", url);
-
-    request.get(url, function(error, response, body) {
+     var req = request.defaults({
+                proxy: service.proxy,
+                headers: service.headers
+     });
+    req.get(url, function(error, response, body) {
 	console.log("simpleHttpRequest error ", error);
       if (error) return next(error);
       helpers.respondSuccessBody(res, body);
