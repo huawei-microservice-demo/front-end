@@ -164,14 +164,13 @@ _________________________________________________________ -->
 <script>
     $(document).ready(function () {
         $.getJSON('/orders', {}, function (data) {
-                    $.each(data, function (index, element) {
-                        var selfRef = element._links.self.href;
-                        var split = selfRef.split("/");
-                        var id = split[split.length - 1];
+            console.log("data received in html "+ data)
+                  $.each(data, function (index, element) {
+                        var selfRef = "http://foobar.snafu.com/orders/";
                         $('#tableOrders').append('\
                     <tr>\
-                        <th># ' + id + '</th>\
-                        <td>' + element.date.split(".")[0].replace("T", " ") + '</td>\
+                        <th># ' + element.id + '</th>\
+                        <td>' + element.date.split(".")[0].replace("T", " ").replace("Z", " ") + '</td>\
                         <td>$ ' + (element.total).toFixed(2) + '</td>\
                         <td>\
                             <span class="label label-success">Shipped</span>\

@@ -21,10 +21,9 @@
     async.waterfall([
         function (callback) {
 
-        var ordersEndpoint = endpoints.ordersUrl;
-        var ordersUrl = "http:" +  ordersEndpoint.split(':')[1] + ":7079";
-  console.log("/orders Request --> orderUrl & port", ordersUrl);
-        request(ordersUrl + "/orders/search/customerId?sort=date&custId=" + custId, function (error, response, body) {
+        var ordersUrl = endpoints.ordersUrl;
+        console.log("/orders Request --> orderUrl & port", ordersUrl);
+        request(ordersUrl + "/orders/customerId/" + custId, function (error, response, body) {
 
             if (error) {
               return callback(error);
@@ -34,7 +33,7 @@
               console.log("No orders found for user: " + custId);
               return callback(null, []);
             }
-            callback(null, JSON.parse(body)._embedded.customerOrders);
+            callback(null, JSON.parse(body));
           });
         }
     ],
@@ -48,9 +47,7 @@
 
   app.get("/orders/*", function (req, res, next) {
     var ordersEndpoint = endpoints.ordersUrl;
-    var ordersUrl = "http:" +  ordersEndpoint.split(':')[1] + ":7079";  
-    var url = ordersUrl + req.url.toString();
-    //var url = "http://localhost:7079/" + req.url.toString();
+    var url = ordersEndpoint + req.url.toString();
     console.log("/orders/* --> url", url);
     request.get(url).pipe(res);
   });
@@ -91,7 +88,8 @@
               "customer": customerlink,
               "address": null,
               "card": null,
-              "items": "http://carts/carts/" + custId + "/items"
+              "items": "http://carts/carts/" + custId + "/items",
+              "customerId": custId
             };
             callback(null, order, addressLink, cardLink);
           });

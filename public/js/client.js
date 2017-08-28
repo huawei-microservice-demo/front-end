@@ -99,7 +99,7 @@ function order() {
         type: "POST",
         async: false,
         success: function (data, textStatus, jqXHR) {
-            if (jqXHR.status == 201) {
+            if (jqXHR.status == 200) {
                 console.log("Order placed.");
                 $("#user-message").html('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> Order placed.</div>');
                 deleteCart();

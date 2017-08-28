@@ -203,23 +203,23 @@ _________________________________________________________ -->
         var orderUrl = $.query.get('order') ? $.query.get('order') : "#";
         console.log("getting " + orderUrl);
         $.getJSON(orderUrl, {}, function (data) {
-            var selfRef = data._links.self.href;
-            var split = selfRef.split("/");
+            // var selfRef = data._links.self.href;
+            var split = orderUrl.split("/");
             var id = split[split.length - 1];
             var cartTotal = 0;
             var numItemsInCart = 0;
             var shipping = 4.99;
             //$('#orderTotal').text('$' + data.total.toFixed(2));
             $('#orderNumber').text(id);
-            $('#orderDate').text(data.date.split(".")[0].replace("T", " "));
+            $('#orderDate').text(data.date.split(".")[0].replace("T", " ").replace("Z", " "));
             $('#orderStatus').text("shipped");
             $.each(data.items, function (index, item) {
                 $.getJSON('/catalogue/' + item.itemId, function (data) {
-                    console.log(JSON.stringify(data));
+                    console.log("/catlogue/"+item.itemId,JSON.stringify(data));
                     $('#tableOrder').append(' <tr>\
                                                 <td>\
                                                     <a href="#">\
-                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.namex + '">\
+                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.name + '">\
                                                     </a>\
                                                 </td>\
                                                 <td>\
