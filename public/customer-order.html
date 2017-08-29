@@ -218,12 +218,12 @@ _________________________________________________________ -->
                     console.log("/catlogue/"+item.itemId,JSON.stringify(data));
                     $('#tableOrder').append(' <tr>\
                                                 <td>\
-                                                    <a href="#">\
+                                                    <a href="detail.html?id=' + item.itemId + '">\
                                                         <img src="' + data.imageUrl[0] + '" alt="' + data.name + '">\
                                                     </a>\
                                                 </td>\
                                                 <td>\
-                                                    <a href="#">' + data.name + '</a>\
+                                                    <a href="detail.html?id=' + item.itemId + '">' + data.name + '</a>\
                                                 </td>\
                                                 <td>' + item.quantity + '</td>\
                                                 <td>$' + data.price.toFixed(2) + '</td>\

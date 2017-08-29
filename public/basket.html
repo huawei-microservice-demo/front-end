@@ -247,6 +247,7 @@
                                 <td>Tax</td>
                                 <th id="orderTax">$0.00</th>
                             </tr>
+                            <tr id="coupon"></tr>
                             <tr class="total">
                                 <td>Total</td>
                                 <th id="orderGrandTotal">$0.00</th>
@@ -267,11 +268,11 @@
                     <form>
                         <div class="input-group">
 
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="couponCode">
 
                                 <span class="input-group-btn">
 
-					<button class="btn btn-primary" type="button"><i
+					<button class="btn btn-primary" type="button" id="couponButton"><i
                             class="fa fa-gift"></i></button>
 
 				    </span>
@@ -408,6 +409,7 @@ _________________________________________________________ -->
                                 $('#orderButton').click(function(event) {
                                     if (orderPlaced == false) {
                                       orderPlaced = true;
+                                      // localStorage.removeItem("couponcode");
                                       return order();
 				    }
                                 });
@@ -487,6 +489,28 @@ _________________________________________________________ -->
         }).always(
                 $(window).trigger('resize')
         );
+
+         // $('#couponButton').click(function(event) {
+         //    var couponCode = $("#couponCode").val();
+         //    console.log("coupon code is : ",couponCode);
+         //    if(!couponCode || couponCode == null || couponCode == ''){
+         //        $("#user-message").html('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Coupon code cannot be empty</div>');
+         //       return; 
+         //    }else{
+         //        localStorage.setItem("couponcode", couponCode);
+         //        $("#coupon").html('<td>Coupon Code</td>'+'<th>'+couponCode+'</th>');
+         //        $("#couponCode").val('');
+         //    }
+         // });
+
+         // var currentUserCoupon = localStorage.getItem("couponcode");
+         // if(currentUserCoupon){
+         //    $("#coupon").html('<td>Coupon Code</td>'+'<th>'+currentUserCoupon+'</th>');
+         // }
+         // else {
+         //    $("#coupon").html('');
+         // }
+
     });
 
 </script>
