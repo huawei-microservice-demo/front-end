@@ -7,24 +7,59 @@
     , helpers   = require("../../helpers")
     , app       = express()
     , service   = require('../service')
+    , endpoints = require('../endpoints')
+    , localStorage = require('localStorage')
 
   // List items in cart for current logged in user.
   app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = helpers.getCustomerId(req, app.get("env"));
+    var username = localStorage.getItem("username") || "nouser";
     console.log("Customer ID: " + custId);
-    var options = {
-      headers: service.headers,
-      uri: "http://carts/carts/" + custId + "/items",
-      proxy: service.proxy,
-      method: 'GET'
-    }
-    request(options, function (error, response, body) {
-      if (error) {
-        return next(error);
+    console.log("username " + username);
+
+     async.waterfall([
+        function (callback) {
+          request(endpoints.ordersUrl+"/orders/"+custId+"/"+username, function (error, response, body) {
+            if(error) {
+              console.log("err in discount "+ error)
+              callback(error);
+              return;
+            }
+            console.log("discount is "+JSON.stringify(body));
+            localStorage.setItem("shipping", body);
+            var shipment = body;
+            callback(error, shipment);
+          });
+        },
+        function (shipment, callback) {
+          console.log("shipment "+ shipment);
+            var options = {
+            headers: service.headers,
+            uri: "http://carts/carts/" + custId + "/items",
+            proxy: service.proxy,
+            method: 'GET'
+          };
+          request(options, function (error, response, body) {
+            if (error) {
+              callback(error)
+                return;
+            }
+            var data = {};
+            data.cart = JSON.parse(body);
+            data.shipment = shipment;
+            console.log("data.shipment"+ data.shipment);
+            var cartDetails = JSON.stringify(data);
+            callback(null, response.statusCode, cartDetails);
+          });
+        }
+    ], function (err, statusCode, body) {
+      if (err) {
+        return next(err);
       }
-      helpers.respondStatusBody(res, response.statusCode, body)
+      helpers.respondStatusBody(res, statusCode, body)
     });
+
   });
 
   // Delete cart

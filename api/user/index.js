@@ -3,6 +3,7 @@
 
     var async = require("async"), express = require("express"), request = require("request"), helpers = require("../../helpers"), app = express(), cookie_name = "logged_in", service = require("../service")
 
+    var localStorage = require('localStorage');
 
     app.get("/customers/:id", function(req, res, next) {
         helpers.simpleHttpRequest("http://user/customers/" + req.session.customerId, res, next);
@@ -269,7 +270,6 @@
 
     app.get("/login", function(req, res, next) {
         console.log("Received login request");
-
         async.waterfall([
                 function(callback) {
                     var options = {
@@ -289,6 +289,8 @@
                         if (response.statusCode == 200 && body != null && body != "") {
                             console.log(body);
                             var customerId = JSON.parse(body).user.id;
+                            var username = JSON.parse(body).user.username;
+                            localStorage.setItem("username", username);
                             console.log(customerId);
                             req.session.customerId = customerId;
                             callback(null, customerId);

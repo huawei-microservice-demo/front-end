@@ -8,6 +8,7 @@
     , helpers   = require("../../helpers")
     , app       = express()
     , service   = require('../service')
+    , localStorage = require('localStorage')
 
   app.get("/orders", function (req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
@@ -46,10 +47,41 @@
   });
 
   app.get("/orders/*", function (req, res, next) {
-    var ordersEndpoint = endpoints.ordersUrl;
-    var url = ordersEndpoint + req.url.toString();
-    console.log("/orders/* --> url", url);
-    request.get(url).pipe(res);
+    var shipping = localStorage.getItem("shipping");
+    console.log("shipping in view is "+ shipping)
+    
+    // console.log("/orders/* --> url", url);
+    // request.get(url).pipe(res);
+
+    async.waterfall([
+        function (callback) {
+
+      var ordersEndpoint = endpoints.ordersUrl;
+      var url = ordersEndpoint + req.url.toString();
+      request(url, function (error, response, body) {
+
+            if (error) {
+              return callback(error);
+            }
+            console.log("/orders/ordersid Reponse ---->   " + JSON.stringify(body));
+            if (response.statusCode == 404) {
+              return callback(null, []);
+            }
+            var data = JSON.parse(body);
+            data.shipping = shipping;
+
+            console.log("after adding shipping "+ JSON.stringify(data))
+            callback(null, JSON.stringify(data));
+          });
+        }
+    ],
+    function (err, result) {
+      if (err) {
+        return next(err);
+      }
+      helpers.respondStatusBody(res, 200, result);
+    });
+
   });
 
   app.post("/orders", function(req, res, next) {

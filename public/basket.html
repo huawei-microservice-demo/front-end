@@ -366,9 +366,10 @@ _________________________________________________________ -->
             if (data != null) {
                 var cartTotal = 0;
                 var numItemsInCart = 0;
-                var shipping = 4.99;
+                var shipping = data.shipment == "true" ? 4.99 : 0.00;
+                console.log("shipping is "+ shipping)
                 var orderPlaced = false;
-                $.each(data, function (index, element) {
+                $.each(data.cart, function (index, element) {
                     if (element != null && element.itemId != null && element.itemId != "null") {
                         $.getJSON('/catalogue/' + element.itemId, function (data) {
                             console.log(JSON.stringify(data));

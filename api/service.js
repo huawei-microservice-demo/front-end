@@ -38,5 +38,5 @@ module.exports = {
 		'X-App': 'sockshop',
 		'X-Version': '0.0.1'
 	},
-	proxy : process.env.SERVICE_MESH_IP
+	proxy : "http://"+process.env.SERVMESHER_SERVICE_HOST+":30101"
 }

@@ -213,7 +213,7 @@ _________________________________________________________ -->
         $.getJSON('/cart', {}, function (data) {
             if (data != null) {
                 var numItemsInCart = 0;
-                $.each(data, function (index, element) {
+                $.each(data.cart, function (index, element) {
                     if (element != null && element.itemId != null && element.itemId != "null") {
                         $.getJSON('/catalogue/' + element.itemId, function (data) {
                             numItemsInCart = numItemsInCart + element.quantity;
