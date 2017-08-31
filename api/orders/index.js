@@ -4,7 +4,6 @@
   var async     = require("async")
     , express   = require("express")
     , request   = require("request")
-    , endpoints = require("../endpoints")
     , helpers   = require("../../helpers")
     , app       = express()
     , service   = require('../service')
@@ -21,10 +20,14 @@
     var custId = req.session.customerId;
     async.waterfall([
         function (callback) {
-
-        var ordersUrl = endpoints.ordersUrl;
-        console.log("/orders Request --> orderUrl & port", ordersUrl);
-        request(ordersUrl + "/orders/customerId/" + custId, function (error, response, body) {
+        var options = {
+          headers: service.headers,
+          uri: "http://orders/orders/customerId/" + custId,
+          proxy: service.proxy,
+          method: 'GET'
+        };
+       
+        request(options, function (error, response, body) {
 
             if (error) {
               return callback(error);
@@ -49,16 +52,16 @@
   app.get("/orders/*", function (req, res, next) {
     var shipping = localStorage.getItem("shipping");
     console.log("shipping in view is "+ shipping)
-    
-    // console.log("/orders/* --> url", url);
-    // request.get(url).pipe(res);
 
-    async.waterfall([
-        function (callback) {
-
-      var ordersEndpoint = endpoints.ordersUrl;
-      var url = ordersEndpoint + req.url.toString();
-      request(url, function (error, response, body) {
+   async.waterfall([
+    function (callback) {
+      var options = {
+          headers: service.headers,
+          uri: "http://orders" +req.url.toString(),
+          proxy: service.proxy,
+          method: 'GET'
+        };
+      request(options, function (error, response, body) {
 
             if (error) {
               return callback(error);
@@ -211,21 +214,25 @@
               return;
             }
             console.log(result);
-            callback(null, order);
+            callback(null, JSON.stringify(order));
           });
         },
         function (order, callback) {
-          var options = {
-            uri: endpoints.ordersUrl + '/orders',
+          console.log("in post orders")
+          var orders = JSON.parse(order);
+          console.log("order body before sending to post "+ orders)
+          var options = { 
+            headers: service.headers,
+            uri: "http://orders/orders",
+            proxy: service.proxy,
             method: 'POST',
             json: true,
-            body: order
+            body: orders
           };
-          console.log("POST: /orders" + endpoints.ordersUrl + '/orders');
           console.log("Posting Order: " + JSON.stringify(order));
           request(options, function (error, response, body) {
             if (error) {
-              console.log(error,"order endpoint")
+              console.log(error,"order post")
               return callback(error);
             }
             console.log("Order response: " + JSON.stringify(response));

@@ -7,10 +7,10 @@
     , helpers   = require("../../helpers")
     , app       = express()
     , service   = require('../service')
-    , endpoints = require('../endpoints')
     , localStorage = require('localStorage')
 
   // List items in cart for current logged in user.
+  console.log("proxy is "+service.proxy)
   app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = helpers.getCustomerId(req, app.get("env"));
@@ -20,7 +20,13 @@
 
      async.waterfall([
         function (callback) {
-          request(endpoints.ordersUrl+"/orders/"+custId+"/"+username, function (error, response, body) {
+          var options = {
+            headers: service.headers,
+            uri: "http://orders/orders/" + custId + "/"+username,
+            proxy: service.proxy,
+            method: 'GET'
+          };
+          request(options, function (error, response, body) {
             if(error) {
               console.log("err in discount "+ error)
               callback(error);

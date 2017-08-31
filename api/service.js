@@ -37,6 +37,11 @@ module.exports = {
 	headers : {
 		'X-App': 'sockshop',
 		'X-Version': '0.0.1'
-	},
-	proxy : "http://"+process.env.SERVMESHER_SERVICE_HOST+":30101"
+	}
+}
+
+if (process.env.MODE == "sidecar") {
+	module.exports.proxy = process.env.SERVICE_MESH_IP
+} else {
+	module.exports.proxy = "http://"+process.env.SERVMESHER_SERVICE_HOST+":30101"
 }
