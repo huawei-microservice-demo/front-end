@@ -200,8 +200,11 @@
                   console.log("Received response order.items Link: " + JSON.stringify(body));
                   var jsonBody = JSON.parse(body);
 
-                  if (jsonBody.status_code !== 500 && jsonBody[0].unitPrice != null) {
+                  if (jsonBody.status_code !== 500) {
                     order.items = jsonBody;
+                  }
+                  else {
+                    order.items = [];
                   }
                   console.log(order.items, "order.items response detail");
                   callback();
@@ -237,7 +240,12 @@
             }
             console.log("Order response: " + JSON.stringify(response));
             console.log("Order response: " + JSON.stringify(body));
-            callback(null, response.statusCode, body);
+            if(response.statusCode == 200){
+              callback(null, response.statusCode, body);
+              return;
+            }
+            callback(response);
+            
           });
         }
     ],

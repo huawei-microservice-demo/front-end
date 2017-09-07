@@ -15,7 +15,7 @@
 
   helpers.errorHandler = function(err, req, res, next) {
     var ret = {
-      message: err.message,
+      message: err.message || "reponse not found",
       error:   err
     };
     res.

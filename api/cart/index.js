@@ -10,7 +10,6 @@
     , localStorage = require('localStorage')
 
   // List items in cart for current logged in user.
-  console.log("proxy is "+service.proxy)
   app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = helpers.getCustomerId(req, app.get("env"));
